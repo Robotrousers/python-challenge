@@ -30,14 +30,6 @@ Last week, I began with VSCode for this assignment, but I switched to Jupyter No
 
 **README.md**: the current file. Provides an overview of the project structure and its contents.
 
-### Prerequisites
-The following Python packages are required to be installed:
-- pandas
-
-Install pandas using pip:
-```bash
-pip install pandas
-
 #### File/Folder Structure
 - project-root/
 ├── PyBank/
@@ -54,3 +46,11 @@ pip install pandas
 │ │ └── election_data.csv
 ├── README.md
 ├── gitbash_repo_upload.png
+
+### Prerequisites
+The following Python packages are required to be installed:
+- pandas
+  
+Install pandas using pip:
+```bash
+pip install pandas
