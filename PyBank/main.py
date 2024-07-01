@@ -1,96 +1,52 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[81]:
-
-
-import pandas as pd
+import csv
 from pathlib import Path
-
-
-# In[82]:
-
+from statistics import mean
 
 # CSV filepath
-csv_path = Path("Resources/budget_data.csv", header=0)
+csv_path = Path("Resources/budget_data.csv")
 
-
-# In[83]:
-
-
-# read CSV file into DF
-bank_df = pd.read_csv(csv_path)
-bank_df.head()
-
-
-# In[84]:
-
+# Read CSV file
+with open(csv_path, mode='r') as file:
+    reader = csv.DictReader(file)
+    data = list(reader)
 
 # The total number of months included in the dataset
-total_months = bank_df['Date'].nunique()
-
-
-# In[85]:
-
+dates = [row['Date'] for row in data]
+total_months = len(set(dates))
 
 # The net total amount of "Profit/Losses" over the entire period
-net_total = bank_df['Profit/Losses'].sum()
-
-
-# In[86]:
-
+profit_losses = [int(row['Profit/Losses']) for row in data]
+net_total = sum(profit_losses)
 
 # The changes in "Profit/Losses" over the entire period, and then the average of those changes
-bank_df['Change'] = bank_df['Profit/Losses'].diff()
-
-
-# In[87]:
-
+changes = [profit_losses[i] - profit_losses[i - 1] for i in range(1, len(profit_losses))]
 
 # The greatest increase in profits (date and amount) over the entire period
-greatest_increase = bank_df.loc[bank_df['Change'].idxmax()]
-
-
-# In[88]:
-
+greatest_increase_amount = max(changes)
+greatest_increase_index = changes.index(greatest_increase_amount) + 1
+greatest_increase_date = data[greatest_increase_index]['Date']
 
 # The greatest decrease in profits (date and amount) over the entire period
-greatest_decrease = bank_df.loc[bank_df['Change'].idxmin()]
+greatest_decrease_amount = min(changes)
+greatest_decrease_index = changes.index(greatest_decrease_amount) + 1
+greatest_decrease_date = data[greatest_decrease_index]['Date']
 
+# Average of those changes
+average_change = mean(changes)
 
-# In[89]:
-
-
-# average of those changes
-average_change = bank_df['Change'].mean()
-
-
-# In[90]:
-
-
-# making the analysis fit the instruction example
-analysis_df = (
+# Making the analysis fit the instruction example
+analysis = (
     "Financial Analysis\n"
     "----------------------------\n"
     f"Total Months: {total_months}\n"
     f"Total: ${net_total}\n"
     f"Average Change: ${average_change:.2f}\n"
-    f"Greatest Increase in Profits: {greatest_increase['Date']} (${greatest_increase['Change']})\n"
-    f"Greatest Decrease in Profits: {greatest_decrease['Date']} (${greatest_decrease['Change']})\n"
+    f"Greatest Increase in Profits: {greatest_increase_date} (${greatest_increase_amount})\n"
+    f"Greatest Decrease in Profits: {greatest_decrease_date} (${greatest_decrease_amount})\n"
 )
 
-
-# In[91]:
-
-
-# Export the DataFrame to .txt
+# Export the analysis to .txt
 with open('bank_analysis.txt', 'w') as file:
-    file.write(analysis_df)
-print(analysis_df)
+    file.write(analysis)
 
-
-# In[ ]:
-
-
-
-
+print(analysis)

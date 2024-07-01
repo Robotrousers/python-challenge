@@ -1,85 +1,47 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
-import pandas as pd
+import csv
 from pathlib import Path
 
-
-# In[60]:
-
-
 # CSV filepath
-csv_path = Path("Resources/election_data.csv", header=0)
+csv_path = Path("Resources/election_data.csv")
 
-
-# In[61]:
-
-
-# read CSV file into DF
-poll_df = pd.read_csv(csv_path)
-poll_df.head()
-
-
-# In[62]:
-
+# Read CSV file
+with open(csv_path, mode='r') as file:
+    reader = csv.DictReader(file)
+    data = list(reader)
 
 # The total number of votes cast
-total_votes = len(poll_df)
-total_votes
-
-
-# In[63]:
-
+total_votes = len(data)
 
 # A complete list of candidates who received votes
-candidates_df = poll_df["Candidate"].unique()
-print(candidates_df)
-
-
-# In[64]:
-
+candidates = list(set(row['Candidate'] for row in data))
 
 # The percentage of votes each candidate won
-candidates_count_df = poll_df['Candidate'].value_counts()
-candidate_percentages = (candidates_count_df / total_votes) * 100
-candidate_percentages
+candidate_votes = {candidate: 0 for candidate in candidates}
 
+for row in data:
+    candidate_votes[row['Candidate']] += 1
 
-# In[65]:
-
+candidate_percentages = {candidate: (votes / total_votes) * 100 for candidate, votes in candidate_votes.items()}
 
 # The winner of the election based on popular vote
-winner = candidates_count_df.idxmax()
-winner
-
-
-# In[66]:
-
+winner = max(candidate_votes, key=candidate_votes.get)
 
 # Prepare the analysis results
-analysis_df = (
+analysis = (
     "Election Results\n"
     "-------------------------\n"
     f"Total Votes: {total_votes}\n"
     "-------------------------\n"
 )
 
-for candidate in candidates_df:
-    analysis_df += f"{candidate}: {candidate_percentages[candidate]:.3f}% ({candidates_count_df[candidate]})\n"
+for candidate in candidates:
+    analysis += f"{candidate}: {candidate_percentages[candidate]:.3f}% ({candidate_votes[candidate]})\n"
 
-analysis_df += "-------------------------\n"
-analysis_df += f"Winner: {winner}\n"
-analysis_df += "-------------------------\n"
+analysis += "-------------------------\n"
+analysis += f"Winner: {winner}\n"
+analysis += "-------------------------\n"
 
-
-# In[67]:
-
-
-# Export the analysis dataframe to .txt
-print(analysis_df)
+# Export the analysis to .txt
+print(analysis)
 with open('poll_analysis.txt', 'w') as file:
-    file.write(analysis_df)
-
+    file.write(analysis)
