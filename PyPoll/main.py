@@ -15,15 +15,15 @@ with open(csvpath) as csvfile:
     csvreader = csv.reader(csvfile, delimiter=',')
     csv_header = next(csvreader)
 
-# -The total number of votes cast
+# The total number of votes cast
     for row in csvreader:
         total_votes += 1
 
-# -A complete list of candidates who received votes
+# A complete list of candidates who received votes
         candidate = row[2]
         candidates.add(candidate)
 
-# -The total number of votes each candidate won
+# The total number of votes each candidate won
         if candidate == "Charles Casper Stockham":
             stockham_votes += 1
             
@@ -33,29 +33,12 @@ with open(csvpath) as csvfile:
         elif candidate == "Raymon Anthony Doane":
             doane_votes += 1
 
-    # if candidate in candidates:
-    #     candidate_votes[candidate] += 1
-    # else    .append(candidate)
-
-
-# print("Total Votes:", total_votes)
-# print("Candidates who received votes:", candidates)
-# print(f"Vote count per candidate: Stockham {stockham_votes}, DeGette {degette_votes}, Doane {doane_votes}")
-
-
-# -The percentage of votes each candidate won
+# The percentage of votes each candidate won
 stockham_per = (stockham_votes) / (total_votes) * 100
 degette_per = (degette_votes) / (total_votes) * 100
 doane_per = (doane_votes) / (total_votes) * 100
 
-# candidate_per = [stockham_per, degette_per, doane_per]
-# candidate_votes = {stockham_votes,
-#                   degette_votes,
-#                   doane_votes}
-
-# -The winner of the election based on popular vote
-# winner_count = max(candidate_votes)
-# winner = candidate[candidate_votes.index(winner_count)]
+# The winner of the election based on popular vote
 if stockham_votes > degette_votes and stockham_votes > doane_votes:
     winner = "Charles Casper Stockham"
 elif degette_votes > stockham_votes and degette_votes > doane_votes:
@@ -64,7 +47,7 @@ elif doane_votes > stockham_votes and doane_votes > degette_votes:
     winner = "Raymon Anthony Doane"
 print(winner)
 
-# Prepare the analysis results
+# analysis
 analysis = (
     "Election Results\n"
     "-------------------------\n"
