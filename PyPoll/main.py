@@ -1,30 +1,68 @@
+import os
 import csv
-from pathlib import Path
 
-# CSV filepath
-csv_path = Path("Resources/election_data.csv")
+csvpath = os.path.join("Resources", "election_data.csv")
 
-# Read CSV file
-with open(csv_path, mode='r') as file:
-    reader = csv.DictReader(file)
-    data = list(reader)
+vote_count = []
+candidates = set()
 
-# The total number of votes cast
-total_votes = len(data)
+total_votes = 0
+stockham_votes = 0
+degette_votes = 0
+doane_votes = 0
 
-# A complete list of candidates who received votes
-candidates = list(set(row['Candidate'] for row in data))
+with open(csvpath) as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
+    csv_header = next(csvreader)
 
-# The percentage of votes each candidate won
-candidate_votes = {candidate: 0 for candidate in candidates}
+# -The total number of votes cast
+    for row in csvreader:
+        total_votes += 1
 
-for row in data:
-    candidate_votes[row['Candidate']] += 1
+# -A complete list of candidates who received votes
+        candidate = row[2]
+        candidates.add(candidate)
 
-candidate_percentages = {candidate: (votes / total_votes) * 100 for candidate, votes in candidate_votes.items()}
+# -The total number of votes each candidate won
+        if candidate == "Charles Casper Stockham":
+            stockham_votes += 1
+            
+        elif candidate == "Diana DeGette":
+            degette_votes += 1
 
-# The winner of the election based on popular vote
-winner = max(candidate_votes, key=candidate_votes.get)
+        elif candidate == "Raymon Anthony Doane":
+            doane_votes += 1
+
+    # if candidate in candidates:
+    #     candidate_votes[candidate] += 1
+    # else    .append(candidate)
+
+
+# print("Total Votes:", total_votes)
+# print("Candidates who received votes:", candidates)
+# print(f"Vote count per candidate: Stockham {stockham_votes}, DeGette {degette_votes}, Doane {doane_votes}")
+
+
+# -The percentage of votes each candidate won
+stockham_per = (stockham_votes) / (total_votes) * 100
+degette_per = (degette_votes) / (total_votes) * 100
+doane_per = (doane_votes) / (total_votes) * 100
+
+# candidate_per = [stockham_per, degette_per, doane_per]
+# candidate_votes = {stockham_votes,
+#                   degette_votes,
+#                   doane_votes}
+
+# -The winner of the election based on popular vote
+# winner_count = max(candidate_votes)
+# winner = candidate[candidate_votes.index(winner_count)]
+if stockham_votes > degette_votes and stockham_votes > doane_votes:
+    winner = "Charles Casper Stockham"
+elif degette_votes > stockham_votes and degette_votes > doane_votes:
+    winner = "Diana DeGette"
+elif doane_votes > stockham_votes and doane_votes > degette_votes:
+    winner = "Raymon Anthony Doane"
+print(winner)
 
 # Prepare the analysis results
 analysis = (
@@ -32,16 +70,15 @@ analysis = (
     "-------------------------\n"
     f"Total Votes: {total_votes}\n"
     "-------------------------\n"
+    f"Charles Casper Stockham: {stockham_per:.3f}% ({stockham_votes})\n"
+    f"Diana DeGette: {degette_per:.3f}% ({degette_votes})\n"
+    f"Raymon Anthony Doane: {doane_per:.3f}% ({doane_votes})\n"
+    "-------------------------\n"
+    f"Winner: {winner}\n"
+    "-------------------------\n"
 )
-
-for candidate in candidates:
-    analysis += f"{candidate}: {candidate_percentages[candidate]:.3f}% ({candidate_votes[candidate]})\n"
-
-analysis += "-------------------------\n"
-analysis += f"Winner: {winner}\n"
-analysis += "-------------------------\n"
+print(analysis)
 
 # Export the analysis to .txt
-print(analysis)
 with open('poll_analysis.txt', 'w') as file:
     file.write(analysis)
