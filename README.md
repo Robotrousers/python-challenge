@@ -21,7 +21,7 @@ Christopher Turner - Wk3Challenge
 
 **main.py**: Python script containing the analysis and code
 
-**results_analysis.txt**: Text file with the results of the election analysis.
+**poll_analysis.txt**: Text file with the results of the election analysis.
 
 **Resources**: Directory containing data files.
 
